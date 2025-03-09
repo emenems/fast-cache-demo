@@ -9,19 +9,15 @@ import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
 
-# Initialize FastAPI app
 app = FastAPI()
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Define generic type variables
 DataType = TypeVar("DataType", bound=BaseModel)  # Data type is a Pydantic model
 KeyType = TypeVar("KeyType")  # Key type can be any type (e.g., int, str)
 
 
-# Generalized DoubleBufferCache class
 class DoubleBufferCache(Generic[KeyType, DataType]):
     def __init__(
         self,
@@ -118,29 +114,27 @@ class DoubleBufferCache(Generic[KeyType, DataType]):
             await self._refresh_cache()
 
 
-# Data model 1
+# Pydantic models for API responses
 class DataResponse1(BaseModel):
     id: int
     value: str
     timestamp: datetime
 
 
-# Data model 2
 class DataResponse2(BaseModel):
     name: str
     data: float
     timestamp: datetime
 
 
-# Fetch function for DataResponse1
+# Async functions to fetch data from slow APIs
 async def _fetch_from_slow_api1(item_id: int) -> DataResponse1:
     await asyncio.sleep(2)  # Simulate slow API
     return DataResponse1(id=item_id, value=f"Data for {item_id}", timestamp=datetime.now())
 
 
-# Fetch function for DataResponse2
 async def _fetch_from_slow_api2(name: str) -> DataResponse2:
-    await asyncio.sleep(2)  # Simulate slow API
+    await asyncio.sleep(3)  # Simulate slow API
     return DataResponse2(name=name, data=42.0, timestamp=datetime.now())
 
 
